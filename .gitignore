@@ -1,6 +1,5 @@
 # Ignore the target directory for Maven/Gradle builds
 target/
-src/main/resources/static
 .settings
 .classpath
 .factorypath
