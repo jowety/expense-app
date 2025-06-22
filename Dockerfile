@@ -1,9 +1,6 @@
 # Use a base image with Java installed
     FROM openjdk:17-jdk-slim
 
-    # Set the working directory inside the container
-    WORKDIR /app
-
     # Copy the executable JAR file into the container
     ARG JAR_FILE=target/*.jar
     COPY ${JAR_FILE} app.jar
