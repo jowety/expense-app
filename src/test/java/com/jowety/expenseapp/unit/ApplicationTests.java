@@ -39,13 +39,13 @@ class ApplicationTests extends TestUtil{
 	@Autowired ExpenseViewDao expenseViewDao;
 	@Autowired ReportService reportService;
 	
-//	@Test
+	@Test
 	public void testGets() {
 //		logResults(accountDao.findAll());
-		logResults(categoryDao.findAll());
-		logResults(subcategoryDao.findAll());
+//		logResults(categoryDao.findAll());
+//		logResults(subcategoryDao.findAll());
 //		logResults(payeeDao.findAll());
-//		logResults(expenseDao.findAll());
+		logResults(expenseDao.findAll());
 //		logResults(expenseViewDao.findAll());
 	}
 //	@Test
@@ -77,7 +77,7 @@ class ApplicationTests extends TestUtil{
 		System.out.println(report.toString());
 	}
 	
-	@Test
+//	@Test
 	public void testReport() {
 		BudgetReport report = reportService.getBudgetReport(2025, "June");
 		System.out.println(report.toString());

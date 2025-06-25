@@ -1,6 +1,9 @@
 package com.jowety.expenseapp.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +22,7 @@ public class Expense {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Date date;
+	private LocalDate date;
 	@ManyToOne
 	private Account account;
 	@ManyToOne

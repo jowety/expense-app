@@ -1,5 +1,7 @@
 package com.jowety.expenseapp.domain;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,4 +19,7 @@ public class Account {
 	private String name;
 	@Enumerated(EnumType.STRING)
 	private AccountType type;
+
+	@Formula("(select count(*) from expense ex where ex.account_id = id) > 0")
+	private boolean inUse;
 }

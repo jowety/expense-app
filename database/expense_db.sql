@@ -48,6 +48,49 @@ CREATE TABLE `category` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `subcategory`
+--
+
+DROP TABLE IF EXISTS `subcategory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `subcategory` (
+  `id` varchar(20) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `category_id` varchar(20) NOT NULL,
+  `budget` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_subcategory_category_idx` (`category_id`),
+  CONSTRAINT `fk_subcategory_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `payee`
+--
+
+DROP TABLE IF EXISTS `payee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payee` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `account_default` varchar(20) DEFAULT NULL,
+  `category_default` varchar(20) DEFAULT NULL,
+  `subcategory_default` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
+  KEY `fk_payee_account_idx` (`account_default`),
+  KEY `fk_payee_category_idx` (`category_default`),
+  KEY `fk_payee_subcategory_idx` (`subcategory_default`),
+  CONSTRAINT `fk_payee_account` FOREIGN KEY (`account_default`) REFERENCES `account` (`id`),
+  CONSTRAINT `fk_payee_category` FOREIGN KEY (`category_default`) REFERENCES `category` (`id`),
+  CONSTRAINT `fk_payee_subcategory` FOREIGN KEY (`subcategory_default`) REFERENCES `subcategory` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `expense`
 --
 
@@ -56,7 +99,7 @@ DROP TABLE IF EXISTS `expense`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `expense` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL,
+  `date` date NOT NULL,
   `account_id` varchar(20) NOT NULL,
   `payee_id` int NOT NULL,
   `amount` decimal(10,2) NOT NULL,
@@ -95,48 +138,8 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `notes`*/;
 SET character_set_client = @saved_cs_client;
 
---
--- Table structure for table `payee`
---
 
-DROP TABLE IF EXISTS `payee`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `payee` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  `account_default` varchar(20) DEFAULT NULL,
-  `category_default` varchar(20) DEFAULT NULL,
-  `subcategory_default` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`),
-  KEY `fk_payee_account_idx` (`account_default`),
-  KEY `fk_payee_category_idx` (`category_default`),
-  KEY `fk_payee_subcategory_idx` (`subcategory_default`),
-  CONSTRAINT `fk_payee_account` FOREIGN KEY (`account_default`) REFERENCES `account` (`id`),
-  CONSTRAINT `fk_payee_category` FOREIGN KEY (`category_default`) REFERENCES `category` (`id`),
-  CONSTRAINT `fk_payee_subcategory` FOREIGN KEY (`subcategory_default`) REFERENCES `subcategory` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `subcategory`
---
-
-DROP TABLE IF EXISTS `subcategory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `subcategory` (
-  `id` varchar(20) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `category_id` varchar(20) NOT NULL,
-  `budget` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_subcategory_category_idx` (`category_id`),
-  CONSTRAINT `fk_subcategory_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Final view structure for view `expense_view`

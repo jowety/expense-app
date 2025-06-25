@@ -59,6 +59,27 @@ public class ExpenseAppController {
 				.orderBy("name", true)
 				.results();
 	}
+	@GetMapping("/account/{id}")
+	@Transactional
+	public Account getAccount(@PathVariable String id){
+		return accountDao.findById(id);
+	}	
+	@PostMapping("/account")
+	@Transactional
+	public Account saveAccount(@RequestBody Account account) {
+		if(account.getId() == null) return accountDao.save(account);
+		else return accountDao.update(account);
+	}
+	@PutMapping("/account")
+	@Transactional
+	public Account updateAccount(@RequestBody Account account) {
+		return accountDao.update(account);
+	}
+	@DeleteMapping("/account/{id}")
+	@Transactional
+	public void deleteAccount(@PathVariable(required = true) String id) {
+		accountDao.delete(id);
+	}
 
 	//PAYEES
 	@GetMapping("/payee")
@@ -174,7 +195,8 @@ public class ExpenseAppController {
 	@GetMapping("/expense/{id}")
 	@Transactional
 	public Expense getExpense(@PathVariable long id) {
-		return expenseDao.findById(id);
+		Expense ex = expenseDao.findById(id);
+		return ex;
 	}	
 	@PostMapping("/expense")
 	@Transactional
