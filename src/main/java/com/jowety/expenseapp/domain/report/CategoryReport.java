@@ -1,18 +1,17 @@
 package com.jowety.expenseapp.domain.report;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
 
 @Data
-public class ReportSubcategory {
+public class CategoryReport {
 
-	String name;
+	Integer year;
+	List<String> months;
 	Map<String, Float> monthTotals = new HashMap<>();
-	
-	public ReportSubcategory(String name) {
-		super();
-		this.name = name;
-	}
+	List<ReportMonthValues> categories = new ArrayList<>();
 }

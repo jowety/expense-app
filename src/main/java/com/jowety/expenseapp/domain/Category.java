@@ -8,13 +8,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="CATEGORY", schema="EXPENSE_DB")
+@Table(name="CATEGORY")
 @Data
 public class Category {
 	
 	@Id 
 	private String id;
 	private String name;
+	private String description;
 	private Float budget;
 
 	@Formula("(select count(*) from subcategory sc where sc.category_id = id) > 0")

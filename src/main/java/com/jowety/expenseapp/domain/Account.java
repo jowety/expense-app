@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="ACCOUNT", schema="EXPENSE_DB")
+@Table(name="ACCOUNT")
 @Data
 public class Account {
 	

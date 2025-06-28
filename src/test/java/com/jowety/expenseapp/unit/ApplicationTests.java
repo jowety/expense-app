@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import com.jowety.data.client.search.Report;
+import com.jowety.data.client.search.SearchResult;
+import com.jowety.data.client.search.SimpleSearch;
 import com.jowety.data.query.Filter;
 import com.jowety.data.query.Search;
 import com.jowety.data.query.Select;
@@ -22,10 +24,12 @@ import com.jowety.expenseapp.dao.PayeeDao;
 import com.jowety.expenseapp.dao.SubcategoryDao;
 import com.jowety.expenseapp.domain.ExpenseView;
 import com.jowety.expenseapp.domain.report.BudgetReport;
+import com.jowety.expenseapp.domain.report.FieldReport;
 import com.jowety.expenseapp.service.ReportService;
 import com.jowety.util.TestUtil;
 
-@SpringBootTest
+@SpringBootTest()
+//@ActiveProfiles("test")
 @Rollback(false)
 class ApplicationTests extends TestUtil{	
 
@@ -39,7 +43,7 @@ class ApplicationTests extends TestUtil{
 	@Autowired ExpenseViewDao expenseViewDao;
 	@Autowired ReportService reportService;
 	
-	@Test
+//	@Test
 	public void testGets() {
 //		logResults(accountDao.findAll());
 //		logResults(categoryDao.findAll());
@@ -63,6 +67,14 @@ class ApplicationTests extends TestUtil{
 	}
 	
 //	@Test
+	public void testLocalDateSearch() {
+		SimpleSearch s = new SimpleSearch();
+		s.getFilters().add("date lte localDate:2025-06-01");
+		SearchResult<ExpenseView> result = expenseViewDao.simpleSearchWithResultWrapper(s);
+		log(result);
+	}
+	
+//	@Test
 	public void testReport1() {
 		Search<ExpenseView> s = new Search<ExpenseView>()
 			.select("year", "month", "category")
@@ -70,10 +82,26 @@ class ApplicationTests extends TestUtil{
 			.select(Select.sum("amount", "Total"))
 			.addGroupByPath("category")
 			.addGroupByPath("subcategory")
-			.filter("year", 2025).filter("month", 5)
+			.filter("year", 2025).filter("monthNumber", 5)
 			.orderByAsc("category")
 			.orderByAsc("subcategory");
 		Report report = expenseViewDao.report(s);
+		System.out.println(report.toString());
+	}
+//	@Test
+	public void testReport2() {
+		Search<ExpenseView> s = new Search<ExpenseView>()
+			.select("payee")			
+			.select(Select.sum("amount", "Total"))
+			.addGroupByPath("payee")
+			.filter("year", 2025).filter("monthNumber", 5)
+			.orderByAsc("payee");
+		Report report = expenseViewDao.report(s);
+		System.out.println(report.toString());
+	}
+	@Test
+	public void testReportByField() {
+		FieldReport report = reportService.getFieldReport(2025, "payee");
 		System.out.println(report.toString());
 	}
 	

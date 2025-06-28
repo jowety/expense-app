@@ -1,5 +1,6 @@
 package com.jowety.expenseapp;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -8,7 +9,10 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +39,8 @@ import com.jowety.expenseapp.domain.ExpenseView;
 import com.jowety.expenseapp.domain.Payee;
 import com.jowety.expenseapp.domain.Subcategory;
 import com.jowety.expenseapp.domain.report.BudgetReport;
-import com.jowety.expenseapp.domain.report.ExpenseReport;
+import com.jowety.expenseapp.domain.report.CategoryReport;
+import com.jowety.expenseapp.domain.report.FieldReport;
 import com.jowety.expenseapp.service.ReportService;
 
 @RestController
@@ -211,13 +216,29 @@ public class ExpenseAppController {
 	}
 	
 	//REPORTS
-	@GetMapping("/reports/expense")
-	public ExpenseReport getExpenseReport(@RequestParam Integer year) {
-		return reportService.getExpenseReport(year);
+	@GetMapping("/reports/category")
+	public CategoryReport getCategoryReport(@RequestParam Integer year) {
+		return reportService.getCategoryReport(year);
 	}
 	@GetMapping("/reports/budget")
 	public BudgetReport getBudgetReport(@RequestParam Integer year, @RequestParam String month) {
 		return reportService.getBudgetReport(year, month);
+	}
+	@GetMapping("/reports/field")
+	public FieldReport getFieldReport(@RequestParam Integer year, @RequestParam String field) {
+		return reportService.getFieldReport(year, field);
+	}
+	
+	//ERROR TESTS
+	@GetMapping("test400")
+	public ResponseEntity<?> test400() {
+		// Returns HTTP 400 Bad Request with a custom error object
+        return new ResponseEntity<>("Custom 400 Error Message from ExpenseApp server",HttpStatus.BAD_REQUEST);// Returns HTTP 400 Bad Request
+	}
+	@GetMapping("test500")
+	public ResponseEntity<?> test500() {
+		// Returns HTTP 400 Bad Request with a custom error object
+        return new ResponseEntity<>("Custom 500 Error Message from ExpenseApp server",HttpStatus.INTERNAL_SERVER_ERROR);// Returns HTTP 500
 	}
 	
 }

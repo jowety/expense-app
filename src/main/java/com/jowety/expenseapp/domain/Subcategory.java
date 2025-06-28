@@ -9,13 +9,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="SUBCATEGORY", schema="EXPENSE_DB")
+@Table(name="SUBCATEGORY")
 @Data
 public class Subcategory {
 
 	@Id 
 	private String id;
 	private String name;
+	private String description;
 	@ManyToOne
 	private Category category;
 	

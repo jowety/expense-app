@@ -8,10 +8,14 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class ExpenseReport {
+public class ReportMonthValues {
 
-	Integer year;
-	List<String> months;
+	String name;
 	Map<String, Float> monthTotals = new HashMap<>();
-	List<ReportCategory> categories = new ArrayList<>();
+	List<ReportMonthValues> subs = new ArrayList<>();
+	
+	public ReportMonthValues(String name) {
+		super();
+		this.name = name;
+	}
 }

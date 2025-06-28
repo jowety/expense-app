@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="PAYEE", schema="EXPENSE_DB")
+@Table(name="PAYEE")
 @Data
 public class Payee {
 

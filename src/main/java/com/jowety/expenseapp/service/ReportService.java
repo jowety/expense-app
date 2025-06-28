@@ -1,13 +1,16 @@
 package com.jowety.expenseapp.service;
 
 import com.jowety.expenseapp.domain.report.BudgetReport;
-import com.jowety.expenseapp.domain.report.ExpenseReport;
+import com.jowety.expenseapp.domain.report.CategoryReport;
+import com.jowety.expenseapp.domain.report.FieldReport;
 
 public interface ReportService {
 
 
 	BudgetReport getBudgetReport(Integer year, String month);
 
-	ExpenseReport getExpenseReport(Integer year);
+	CategoryReport getCategoryReport(Integer year);
+
+	FieldReport getFieldReport(Integer year, String field);
 
 }
