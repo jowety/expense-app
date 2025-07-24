@@ -1,6 +1,5 @@
 package com.jowety.expenseapp;
 
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,15 +29,16 @@ import com.jowety.expenseapp.dao.CategoryDao;
 import com.jowety.expenseapp.dao.ExpenseDao;
 import com.jowety.expenseapp.dao.ExpenseViewDao;
 import com.jowety.expenseapp.dao.PayeeDao;
+import com.jowety.expenseapp.dao.RecurringExpenseDao;
 import com.jowety.expenseapp.dao.SubcategoryDao;
 import com.jowety.expenseapp.domain.Account;
 import com.jowety.expenseapp.domain.Category;
 import com.jowety.expenseapp.domain.Expense;
 import com.jowety.expenseapp.domain.ExpenseView;
 import com.jowety.expenseapp.domain.Payee;
+import com.jowety.expenseapp.domain.RecurringExpense;
 import com.jowety.expenseapp.domain.Subcategory;
 import com.jowety.expenseapp.domain.report.BudgetReport;
-import com.jowety.expenseapp.domain.report.CategoryReport;
 import com.jowety.expenseapp.domain.report.FieldReport;
 import com.jowety.expenseapp.service.ReportService;
 
@@ -54,6 +53,7 @@ public class ExpenseAppController {
 	@Autowired PayeeDao payeeDao;
 	@Autowired ExpenseDao expenseDao;
 	@Autowired ExpenseViewDao expenseViewDao;
+	@Autowired RecurringExpenseDao recurringDao;
 	@Autowired ReportService reportService;
 	
 	//ACCOUNTS
@@ -214,12 +214,33 @@ public class ExpenseAppController {
 	public void deleteExpense(@PathVariable(required = true) long id) {
 		expenseDao.delete(id);
 	}
+
+	//RECURRING EXPENSES
+	@GetMapping("recurring")
+	public List<RecurringExpense> getRecurring(){
+		List<RecurringExpense> results = recurringDao.search().orderBy("payee.name", true).results();
+		return results;
+	}
+	@GetMapping("/recurring/{id}")
+	@Transactional
+	public RecurringExpense getRecurring(@PathVariable long id) {
+		RecurringExpense ex = recurringDao.findById(id);
+		return ex;
+	}	
+	@PostMapping("/recurring")
+	@Transactional
+	public RecurringExpense saveRecurring(@RequestBody RecurringExpense expense) {
+		if(expense.getId() == null) return recurringDao.save(expense);
+		else return recurringDao.update(expense);
+	}
+	/*
+	 * @DeleteMapping("/recurring/{id}")
+	 * 
+	 * @Transactional public void deleteRecurring(@PathVariable(required = true)
+	 * long id) { recurringDao.delete(id); }
+	 */
 	
 	//REPORTS
-	@GetMapping("/reports/category")
-	public CategoryReport getCategoryReport(@RequestParam Integer year) {
-		return reportService.getCategoryReport(year);
-	}
 	@GetMapping("/reports/budget")
 	public BudgetReport getBudgetReport(@RequestParam Integer year, @RequestParam String month) {
 		return reportService.getBudgetReport(year, month);
@@ -228,6 +249,7 @@ public class ExpenseAppController {
 	public FieldReport getFieldReport(@RequestParam Integer year, @RequestParam String field) {
 		return reportService.getFieldReport(year, field);
 	}
+	
 	
 	//ERROR TESTS
 	@GetMapping("test400")

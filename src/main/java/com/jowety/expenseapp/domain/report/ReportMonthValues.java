@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class ReportMonthValues {
 
-	String name;
-	Map<String, Float> monthTotals = new HashMap<>();
-	List<ReportMonthValues> subs = new ArrayList<>();
+	String name;//field value (example: category name)
+	Map<String, Float> monthTotals = new HashMap<>();//month name to total map
+	List<ReportMonthValues> subs = new ArrayList<>();//nested values like subcategories
 	
 	public ReportMonthValues(String name) {
 		super();

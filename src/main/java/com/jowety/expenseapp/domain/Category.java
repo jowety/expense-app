@@ -18,6 +18,7 @@ public class Category {
 	private String description;
 	private Float budget;
 
-	@Formula("(select count(*) from subcategory sc where sc.category_id = id) > 0")
+	@Formula("(select count(*) from subcategory sc where sc.category_id = id) > 0 "
+			+ "OR (select count(*) from payee p where p.category_default = id) > 0")
 	private boolean inUse;
 }

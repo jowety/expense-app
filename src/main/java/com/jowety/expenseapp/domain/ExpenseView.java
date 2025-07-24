@@ -24,4 +24,6 @@ public class ExpenseView {
 	private String subcategory;
 	private Float amount;
 	private String notes;	
+	private boolean autoInsert;//inserted by recurring framework
+	private boolean estimate;//flag for variable recurring expenses
 }

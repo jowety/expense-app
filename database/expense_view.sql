@@ -1,4 +1,4 @@
-create or replace view expense_db.expense_view as
+create or replace view expense_view as
 select
 expense.id as id,
 expense.date as date,
@@ -10,9 +10,11 @@ payee.name as payee,
 category.name as category,
 subcategory.name as subcategory,
 expense.amount as amount,
-expense.notes as notes
-from expense_db.expense expense
-join expense_db.account account on expense.account_id = account.id
-join expense_db.payee payee on expense.payee_id = payee.id
-join expense_db.category category on expense.category_id = category.id
-join expense_db.subcategory subcategory on expense.subcategory_id = subcategory.id
+expense.notes as notes,
+expense.auto_insert as auto_insert,
+expense.estimate as estimate
+from expense expense
+join account account on expense.account_id = account.id
+join payee payee on expense.payee_id = payee.id
+join subcategory subcategory on expense.subcategory_id = subcategory.id
+join category category on subcategory.category_id = category.id

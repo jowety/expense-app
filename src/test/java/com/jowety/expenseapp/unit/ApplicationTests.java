@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.jowety.data.client.search.Report;
 import com.jowety.data.client.search.SearchResult;
@@ -21,6 +22,8 @@ import com.jowety.expenseapp.dao.CategoryDao;
 import com.jowety.expenseapp.dao.ExpenseDao;
 import com.jowety.expenseapp.dao.ExpenseViewDao;
 import com.jowety.expenseapp.dao.PayeeDao;
+import com.jowety.expenseapp.dao.RecurringExpenseDao;
+import com.jowety.expenseapp.dao.RecurringExpenseStatusDao;
 import com.jowety.expenseapp.dao.SubcategoryDao;
 import com.jowety.expenseapp.domain.ExpenseView;
 import com.jowety.expenseapp.domain.report.BudgetReport;
@@ -29,7 +32,7 @@ import com.jowety.expenseapp.service.ReportService;
 import com.jowety.util.TestUtil;
 
 @SpringBootTest()
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @Rollback(false)
 class ApplicationTests extends TestUtil{	
 
@@ -42,6 +45,8 @@ class ApplicationTests extends TestUtil{
 	@Autowired ExpenseDao expenseDao;
 	@Autowired ExpenseViewDao expenseViewDao;
 	@Autowired ReportService reportService;
+	@Autowired RecurringExpenseDao recurringDao;
+	@Autowired RecurringExpenseStatusDao recurringStatusDao;
 	
 //	@Test
 	public void testGets() {
@@ -49,8 +54,10 @@ class ApplicationTests extends TestUtil{
 //		logResults(categoryDao.findAll());
 //		logResults(subcategoryDao.findAll());
 //		logResults(payeeDao.findAll());
-		logResults(expenseDao.findAll());
+//		logResults(expenseDao.findAll());
 //		logResults(expenseViewDao.findAll());
+//		logResults(recurringDao.findAll());
+//		logResults(recurringStatusDao.findAll());
 	}
 //	@Test
 	public void testQuery() {
@@ -99,7 +106,7 @@ class ApplicationTests extends TestUtil{
 		Report report = expenseViewDao.report(s);
 		System.out.println(report.toString());
 	}
-	@Test
+//	@Test
 	public void testReportByField() {
 		FieldReport report = reportService.getFieldReport(2025, "payee");
 		System.out.println(report.toString());

@@ -23,7 +23,6 @@ import com.jowety.expenseapp.domain.Subcategory;
 import com.jowety.expenseapp.domain.report.BudgetReport;
 import com.jowety.expenseapp.domain.report.BudgetReportCategory;
 import com.jowety.expenseapp.domain.report.BudgetReportSubcategory;
-import com.jowety.expenseapp.domain.report.CategoryReport;
 import com.jowety.expenseapp.domain.report.FieldReport;
 import com.jowety.expenseapp.domain.report.ReportMonthValues;
 
@@ -62,68 +61,34 @@ public class ReportServiceImpl implements ReportService {
 
 		List<String> fieldValues = expenseViewDao.search().select(field)
 				.filter("year", year).orderByAsc(field).distinct().singleColumnSearch();
-		for(String f: fieldValues) {
-			ReportMonthValues rf = new ReportMonthValues(f);
-			report.getFields().add(rf);
+		for(String fieldValue: fieldValues) {
+			ReportMonthValues monthValues = new ReportMonthValues(fieldValue);
+			report.getFields().add(monthValues);
 			List<Filter<ExpenseView>> fieldFilters = new ArrayList<>(baseFilters);
-			fieldFilters.add(new Filter<ExpenseView>(field, f));
+			fieldFilters.add(new Filter<ExpenseView>(field, fieldValue));
 			search.setFilters(fieldFilters);
 			List<Tuple> fieldLevel = expenseViewDao.selectedSearch(search);
 			for(Tuple t: fieldLevel) {
-				rf.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
+				monthValues.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
+			}
+			if(field.equals("category")) {
+				List<String> subcategories = expenseViewDao.search().select("subcategory")
+						.filter("year", year).filter("category", fieldValue)
+						.orderByAsc("subcategory").distinct().singleColumnSearch();
+				for(String subcat: subcategories) {
+					ReportMonthValues rsubcat = new ReportMonthValues(subcat);
+					monthValues.getSubs().add(rsubcat);
+					List<Filter<ExpenseView>> subcatFilters = new ArrayList<>(fieldFilters);
+					subcatFilters.add(new Filter<ExpenseView>("subcategory", subcat));
+					search.setFilters(subcatFilters);
+					List<Tuple> scatLevel = expenseViewDao.selectedSearch(search);
+					for(Tuple t: scatLevel) {
+						rsubcat.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
+					}				
+				}
 			}
 		}
 		
-		return report;
-	}
-	
-	@Override
-	public CategoryReport getCategoryReport(Integer year) {
-		CategoryReport report = new CategoryReport();
-		report.setYear(year);
-		List<String> months = expenseViewDao.getMonthList(year);
-		report.setMonths(months);
-		List<Filter<ExpenseView>> baseFilters = new ArrayList<>();
-		baseFilters.add(new Filter<>("year", year));
-
-		Search<ExpenseView> search = new Search<ExpenseView>()
-				.select("monthString")
-				.select(Select.sum("amount", "Total"))
-				.addGroupByPath("monthString");
-		search.setFilters(baseFilters);
-		List<Tuple> topLevel = expenseViewDao.selectedSearch(search);
-		for(Tuple t: topLevel) {
-			report.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
-		}
-		
-		List<String> categories = expenseViewDao.search().select("category")
-				.filter("year", year).orderByAsc("category").distinct().singleColumnSearch();
-		for(String cat: categories) {
-			ReportMonthValues rcat = new ReportMonthValues(cat);
-			report.getCategories().add(rcat);
-			List<Filter<ExpenseView>> catFilters = new ArrayList<>(baseFilters);
-			catFilters.add(new Filter<ExpenseView>("category", cat));
-			search.setFilters(catFilters);
-			List<Tuple> catLevel = expenseViewDao.selectedSearch(search);
-			for(Tuple t: catLevel) {
-				rcat.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
-			}
-			List<String> subcategories = expenseViewDao.search().select("subcategory")
-					.filter("year", year).filter("category", cat)
-					.orderByAsc("subcategory").distinct().singleColumnSearch();
-			for(String subcat: subcategories) {
-				ReportMonthValues rsubcat = new ReportMonthValues(subcat);
-				rcat.getSubs().add(rsubcat);
-				List<Filter<ExpenseView>> subcatFilters = new ArrayList<>(catFilters);
-				subcatFilters.add(new Filter<ExpenseView>("subcategory", subcat));
-				search.setFilters(subcatFilters);
-				List<Tuple> scatLevel = expenseViewDao.selectedSearch(search);
-				for(Tuple t: scatLevel) {
-					rsubcat.getMonthTotals().put((String)t.get(0), (Float)t.get(1));
-				}				
-			}
-		}
-
 		return report;
 	}
 	
@@ -168,32 +133,5 @@ public class ReportServiceImpl implements ReportService {
 
 		return report;
 	}
-	
 
-//	@Override
-//	public Report getExpenseReport(Integer year, String month) {
-//		Report report = new Report(String.format("Expense Report for %s %s", month, year));
-//		Search<ExpenseView> s = new Search<ExpenseView>()
-//			.select(Select.sum("amount", "Total"))
-//			.filter("year", year).filter("month", month);
-//
-//		List<Tuple> results = selectedSearch(s);	
-//		this.addResultsToRowHolder(report, results, s);
-//		s.select("category").addGroupByPath("category").orderByAsc("category");
-//		results = selectedSearch(s);
-//		ReportRow root = report.getRows().get(0);
-//		this.addResultsToRowHolder(root, results, s);
-//		s.select("subcategory").addGroupByPath("subcategory").orderByAsc("subcategory");
-//		Collection<Filter<ExpenseView>> baseFilters = s.getFilters();
-//		for(ReportRow rr: root.getRows()) {
-//			String category = (String) rr.getCellByName("category").getValue();
-//			List<Filter<ExpenseView>> filters = new ArrayList<>(baseFilters);
-//			filters.add(new Filter<>("category", category));
-//			s.setFilters(filters);
-//			results = selectedSearch(s);
-//			this.addResultsToRowHolder(rr, results, s);
-//		}
-//			
-//		return report;
-//	}
 }

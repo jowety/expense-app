@@ -31,6 +31,9 @@ public class Expense {
 	@ManyToOne
 	private Subcategory subcategory;
 	private String notes;	
-	@Column(name = "import_desc")
-	private String importedDescription;
+	private boolean autoInsert;//inserted by recurring framework
+	private boolean estimate;//flag for variable recurring expenses
+	
+//	@Column(name = "import_desc")
+//	private String importedDescription;
 }
