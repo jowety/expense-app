@@ -2,7 +2,6 @@ package com.jowety.expenseapp.service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import com.jowety.expenseapp.domain.Expense;
 import com.jowety.expenseapp.domain.RecurringExpense;
 import com.jowety.expenseapp.domain.RecurringExpense.Frequency;
 import com.jowety.expenseapp.domain.RecurringExpense.InsertStrategy;
-import com.jowety.expenseapp.domain.RecurringExpenseStatus;
 
 @Service
 public class RecurringServiceImpl implements RecurringService {
@@ -53,11 +51,11 @@ public class RecurringServiceImpl implements RecurringService {
 		ex.setDate(exDate);
 		ex = expenseDao.save(ex);
 		
-		RecurringExpenseStatus status = new RecurringExpenseStatus();
-		status.setExpense(ex);
-		status.setRecurring(recur);
-		status.setInsertDate(new Date());
-		recurringStatusDao.save(status);
+//		RecurringExpenseStatus status = new RecurringExpenseStatus();
+//		status.setExpense(ex);
+//		status.setRecurring(recur);
+//		status.setInsertDate(new Date());
+//		recurringStatusDao.save(status);
 	}
 
 	@Override

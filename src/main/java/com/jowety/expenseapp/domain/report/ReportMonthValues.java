@@ -11,6 +11,7 @@ import lombok.Data;
 public class ReportMonthValues {
 
 	String name;//field value (example: category name)
+	Stats stats = new Stats();
 	Map<String, Float> monthTotals = new HashMap<>();//month name to total map
 	List<ReportMonthValues> subs = new ArrayList<>();//nested values like subcategories
 	

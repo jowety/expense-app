@@ -19,6 +19,7 @@ public class Account {
 	private String name;
 	@Enumerated(EnumType.STRING)
 	private AccountType type;
+	private boolean excluded;
 
 	@Formula("(select count(*) from expense ex where ex.account_id = id) > 0 "
 	+ "OR (select count(*) from payee p where p.account_default = id) > 0")

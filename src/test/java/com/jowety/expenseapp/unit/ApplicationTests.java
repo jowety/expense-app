@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.jowety.data.client.search.Report;
 import com.jowety.data.client.search.SearchResult;
@@ -19,20 +18,27 @@ import com.jowety.data.query.Search;
 import com.jowety.data.query.Select;
 import com.jowety.expenseapp.dao.AccountDao;
 import com.jowety.expenseapp.dao.CategoryDao;
+import com.jowety.expenseapp.dao.ExpenseAcctMonTotalsViewDao;
+import com.jowety.expenseapp.dao.ExpenseCatMonTotalsViewDao;
 import com.jowety.expenseapp.dao.ExpenseDao;
+import com.jowety.expenseapp.dao.ExpensePayeeMonTotalsViewDao;
 import com.jowety.expenseapp.dao.ExpenseViewDao;
 import com.jowety.expenseapp.dao.PayeeDao;
 import com.jowety.expenseapp.dao.RecurringExpenseDao;
 import com.jowety.expenseapp.dao.RecurringExpenseStatusDao;
 import com.jowety.expenseapp.dao.SubcategoryDao;
+import com.jowety.expenseapp.domain.ExpenseAcctMonTotalsView;
+import com.jowety.expenseapp.domain.ExpensePayeeMonTotalsView;
 import com.jowety.expenseapp.domain.ExpenseView;
 import com.jowety.expenseapp.domain.report.BudgetReport;
 import com.jowety.expenseapp.domain.report.FieldReport;
 import com.jowety.expenseapp.service.ReportService;
 import com.jowety.util.TestUtil;
 
+import jakarta.persistence.Tuple;
+
 @SpringBootTest()
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 @Rollback(false)
 class ApplicationTests extends TestUtil{	
 
@@ -44,6 +50,9 @@ class ApplicationTests extends TestUtil{
 	@Autowired PayeeDao payeeDao;
 	@Autowired ExpenseDao expenseDao;
 	@Autowired ExpenseViewDao expenseViewDao;
+	@Autowired ExpenseCatMonTotalsViewDao expenseCatMonTotalsViewDao;
+	@Autowired ExpenseAcctMonTotalsViewDao expenseAcctMonTotalsViewDao;
+	@Autowired ExpensePayeeMonTotalsViewDao expensePayeeMonTotalsViewDao;
 	@Autowired ReportService reportService;
 	@Autowired RecurringExpenseDao recurringDao;
 	@Autowired RecurringExpenseStatusDao recurringStatusDao;
@@ -84,8 +93,7 @@ class ApplicationTests extends TestUtil{
 //	@Test
 	public void testReport1() {
 		Search<ExpenseView> s = new Search<ExpenseView>()
-			.select("year", "month", "category")
-			.select("subcategory")
+			.select("year", "month", "category", "subcategory")
 			.select(Select.sum("amount", "Total"))
 			.addGroupByPath("category")
 			.addGroupByPath("subcategory")
@@ -94,6 +102,31 @@ class ApplicationTests extends TestUtil{
 			.orderByAsc("subcategory");
 		Report report = expenseViewDao.report(s);
 		System.out.println(report.toString());
+	}
+//	@Test
+	public void testCatTotalsViews() {
+		List<Tuple> results = expenseCatMonTotalsViewDao.search()
+				.select("year", "category", "subcategory")
+				.select(Select.avg("total", "Average"))
+				.select(Select.min("total", "Min"))
+				.select(Select.max("total", "Max"))
+				.addGroupByPath("category")
+				.addGroupByPath("subcategory")
+				.filter("year", 2025)
+				.orderByAsc("category")
+				.orderByAsc("subcategory")
+				.selectedResults();
+		logResults(results);
+	}
+//	@Test
+	public void testAcctTotalsViews() {
+		List<ExpenseAcctMonTotalsView> results = expenseAcctMonTotalsViewDao.search().filter("year", 2025).results();
+		logResults(results);
+	}
+//	@Test
+	public void testPayeeTotalsViews() {
+		List<ExpensePayeeMonTotalsView> results = expensePayeeMonTotalsViewDao.search().filter("year", 2025).results();
+		logResults(results);
 	}
 //	@Test
 	public void testReport2() {
@@ -108,7 +141,7 @@ class ApplicationTests extends TestUtil{
 	}
 //	@Test
 	public void testReportByField() {
-		FieldReport report = reportService.getFieldReport(2025, "payee");
+		FieldReport report = reportService.getFieldReport(2025, "category");
 		System.out.println(report.toString());
 	}
 	
@@ -120,5 +153,13 @@ class ApplicationTests extends TestUtil{
 //	@Test
 	public void testMonthList() {
 		logResults(expenseViewDao.getMonthList(2025));
+	}
+//	@Test
+	public void testMonthCount() {
+		System.out.println(expenseViewDao.getMonthCountExcludingCurrent(2025));
+	}
+	@Test
+	public void getRecurringTotal() {
+		System.out.println(recurringDao.getMonthTotal());
 	}
 }

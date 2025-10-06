@@ -1,5 +1,6 @@
 package com.jowety.expenseapp.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,13 @@ public class ExpenseViewDaoImpl extends DaoImpl<ExpenseView> implements ExpenseV
 				.selectedResults();
 		List<String> strings = ints.stream().map(i-> i.get(0, String.class)).collect(Collectors.toList());
 		return strings;
+	}
+	
+	@Override
+	public Integer getMonthCountExcludingCurrent(Integer year) {
+		return sqlTypedSingleResult(
+				"select count(distinct month_number) from expense_view where year = ?1 and month_number <> ?2", 
+				Integer.class, year, LocalDate.now().getMonthValue());
 	}
 	
 	@Override

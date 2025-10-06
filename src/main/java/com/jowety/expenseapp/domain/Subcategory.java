@@ -19,7 +19,7 @@ public class Subcategory {
 	private String description;
 	@ManyToOne
 	private Category category;
-	
+	private boolean excluded;
 	private Float budget;
 
 	@Formula("(select count(*) from expense ex where ex.subcategory_id = id) > 0 "

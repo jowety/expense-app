@@ -13,6 +13,7 @@ public class FieldReport {
 	Integer year;
 	List<String> months;
 	String fieldName;
+	Stats stats = new Stats();
 	Map<String, Float> monthTotals = new HashMap<>();
 	List<ReportMonthValues> fields = new ArrayList<>();
 

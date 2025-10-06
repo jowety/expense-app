@@ -5,4 +5,6 @@ import com.jowety.expenseapp.domain.RecurringExpense;
 
 public interface RecurringExpenseDao extends DaoIF<RecurringExpense> {
 
+	Float getMonthTotal();
+
 }

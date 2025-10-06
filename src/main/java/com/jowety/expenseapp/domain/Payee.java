@@ -30,6 +30,7 @@ public class Payee {
 	@JoinColumn(name = "subcategory_default")
 	private Subcategory subcategoryDefault;
 	private String description;
+	private boolean excluded;
 	
 	@Formula("(select count(*) from expense ex where ex.payee_id = id) > 0")
 	private boolean inUse;

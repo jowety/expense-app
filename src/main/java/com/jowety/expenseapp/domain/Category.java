@@ -16,6 +16,7 @@ public class Category {
 	private String id;
 	private String name;
 	private String description;
+	private boolean excluded;
 	private Float budget;
 
 	@Formula("(select count(*) from subcategory sc where sc.category_id = id) > 0 "

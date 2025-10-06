@@ -15,4 +15,6 @@ public interface ExpenseViewDao extends DaoIF<ExpenseView> {
 
 	Report getTotalsByField(String field, Integer year, String month);
 
+	Integer getMonthCountExcludingCurrent(Integer year);
+
 }
